@@ -1,0 +1,55 @@
+type (
+	ExecReq struct {
+		action     string   `json:"action" from:"action" desc:"命令"`
+		params     []string `json:"params" from:"params" desc:"参数"`
+		returnBody string   `json:"returnBody,optional" from:"returnBody" desc:"返回结果体"`
+		input      string   `json:"input" from:"input" desc:"输入文件"`
+	}
+
+	ExecResp struct {
+		msg   string     `json:"msg"  desc:"业务提示"`
+		code  int        `json:"code" desc:"业务码"`
+		error RespError  `json:"error,optional" desc:"错误信息对象"`
+		data  []ExecData `json:"data" desc:"数据对象数组"`
+		meta  MetaData   `json:"meta,optional=1" desc:"扩展元数据"`
+	}
+
+	RespError struct {
+		errno  int    `json:"errno" desc:"错误码"`
+		errmsg string `json:"errmsg" desc:"错误提示"`
+	}
+
+	ExecData struct {
+		Key   string      `json:"key" desc:"对象键名"`
+		Value interface{} `json:"value" desc:"数据"`
+	}
+
+	MetaData struct {
+		Values []ExecData `json:"values" desc:"数据元数组"`
+	}
+)
+
+type (
+	CheckReq struct {
+		action string `form:"action"`
+	}
+
+	CheckResp struct {
+		msg  string   `json:"msg" desc:"业务提示"`
+		code int      `json:"code"  desc:"业务码"`
+		meta MetaData `json:"meta,optional" desc:"数据元"`
+	}
+)
+
+service ffmpeg-service-api {
+    @server(
+        handler: ExecHandler
+    )
+    post /exec(ExecReq) returns(ExecResp)
+
+    @server(
+        handler: CheckHandler
+    )
+
+    get /check(CheckReq) returns(CheckResp)
+}
