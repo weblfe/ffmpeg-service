@@ -243,11 +243,9 @@ func (x *Any) GetValue() []byte {
 }
 
 func (x *Any) GetVal() interface{} {
-		if x != nil && x.Value != nil {
-				var v = new(interface{})
-				if err := json.Unmarshal(x.Value, v); err == nil {
-						return v
-				}
+		var v = new(interface{})
+		if err := x.GetData(v); err == nil {
+				return v
 		}
 		return nil
 }
